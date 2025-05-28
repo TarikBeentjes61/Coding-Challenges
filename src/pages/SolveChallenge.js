@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import Navigation from '../components/navigation/Navigation.js';
+import Navigation from '../components/Navigation.js';
 import useGetHandler from "../useGetHandler";
 import SolveChallengeForm from '../components/SolveChallengeForm.js';
 

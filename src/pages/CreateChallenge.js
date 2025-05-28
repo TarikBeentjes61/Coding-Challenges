@@ -1,4 +1,4 @@
-import Navigation from '../components/navigation/Navigation';
+import Navigation from '../components/Navigation';
 import CreateChallengeForm from '../components/CreateChallengeForm';
 import { Container } from 'react-bootstrap';
 

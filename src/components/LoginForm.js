@@ -13,7 +13,6 @@ function LoginForm() {
     e.preventDefault();
     try {
       const result = await post({ username, password });
-      console.log(result)
       if (result.token) {
         localStorage.setItem('token', result.token);
         localStorage.setItem('user', JSON.stringify(result.user));
@@ -23,31 +22,52 @@ function LoginForm() {
       }
       navigate('/home');
     } catch (err) {
-      setMessage('Login failed: ' + err.message);
+      setMessage(err.message);
     }
   };
 
   return (
-    <div style={{ maxWidth: '300px', margin: 'auto' }}>
-      <h2>Login</h2>
-      <form onSubmit={handleLogin}>
-        <input
-          type="text"
-          value={username}
-          placeholder="Username"
-          onChange={(e) => setUsername(e.target.value)}
-          required
-        /><br /><br />
-        <input
-          type="password"
-          value={password}
-          placeholder="Password"
-          onChange={(e) => setPassword(e.target.value)}
-          required
-        /><br /><br />
-        <button type="submit">Login</button>
+      <div className="mt-8">
+      <form className="max-w-sm mx-auto" onSubmit={handleLogin}>
+        <div className="mb-5">
+          <label for="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+          <input
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            type="text"
+            value={username}
+            placeholder="Username"
+            onChange={(e) => setUsername(e.target.value)}
+            required
+          />
+        </div>
+        <div className="mb-5">
+          <label for="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+          <input
+            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+            type="password"
+            value={password}
+            placeholder="Password"
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+        </div>
+        <div className="flex items-start mb-5">
+          <button
+            type="submit"
+            className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+          >
+            Login
+          </button>
+        </div>
+        {message && (
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span class="block sm:inline">{message}</span>
+          <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setMessage('')}>
+            X
+          </span>
+        </div>
+        )}
       </form>
-      {message && <p>{message}</p>}
     </div>
   );
 }

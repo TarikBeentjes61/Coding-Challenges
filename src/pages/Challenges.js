@@ -1,4 +1,4 @@
-import Navigation from '../components/navigation/Navigation';
+import Navigation from '../components/Navigation';
 import ChallengeTable from '../components/ChallengeTable';
 import { Container } from 'react-bootstrap';
 

@@ -1,5 +1,5 @@
 import { useParams } from 'react-router-dom';
-import Navigation from '../components/navigation/Navigation';
+import Navigation from '../components/Navigation';
 import ChallengeTable from '../components/ChallengeTable';
 import useGetHandler from '../useGetHandler';
 import { Container, Row, Image} from 'react-bootstrap';
