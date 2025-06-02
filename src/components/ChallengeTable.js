@@ -1,112 +1,127 @@
 import ChallengeRow from '../components/ChallengeRow';
 import { useState, useEffect } from 'react';
 import useGetHandler from '../useGetHandler';
-import { Form, Container, Row, Col } from 'react-bootstrap';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 
-function ChallengeTable({url = 'challenges', showUser = true, showTitle = true, showDifficulty = true, showSolved = true, showSearch = true}) { 
-    const { data: challenges, loading, error } = useGetHandler(url, { method: 'GET' });
-    const [filteredChallenges, setFilteredChallenges] = useState(null);
-    const [title, setTitle] = useState(null);
-    const [username, setUsername] = useState(null);
-    const [difficulty, setDifficulty] = useState(null);
-    const [solved, setSolved] = useState(null);
-    const colSize = showSearch ? 1 : 2;
-    const titleColSize = showSearch ? 1 : 6;
+function ChallengeTable({
+  url = 'challenges',
+  showUser = true,
+  showTitle = true,
+  showDate = true,
+  showSolved = true,
+  showTimesSolved = true,
+  showSearch = true,
+}) {
+  const { data: challenges, loading, error } = useGetHandler(url, { method: 'GET' });
+  const [filteredChallenges, setFilteredChallenges] = useState(null);
+  const [filter, setFilter] = useState('');
+  const [solved, setSolved] = useState('');
 
     useEffect(() => {
-        if (!challenges) return;
+    if (!challenges) return;
 
-        const filtered = challenges.filter((challenge) => {
-            const matchesTitle = !title || challenge.title?.toLowerCase().includes(title.toLowerCase());
-            const matchesUser = !username || challenge.username?.toLowerCase().includes(username.toLowerCase());
-            const matchesDifficulty = !difficulty || challenge.difficulty === difficulty;
-            const matchesSolved = !solved ||
-            (solved === 'solved' && challenge.solved === true) ||
-            (solved === 'unsolved' && challenge.solved === false);
+    const search = filter.toLowerCase();
 
-            return matchesTitle && matchesUser && matchesDifficulty && matchesSolved;
-        });
+    const filtered = challenges.filter((challenge) => {
+        const matchesText =
+        challenge.title?.toLowerCase().includes(search) ||
+        challenge.username?.toLowerCase().includes(search);
 
-        setFilteredChallenges(filtered);
-    }, [title, username, difficulty, solved, challenges]);
+        const matchesSolved =
+        !solved ||
+        (solved === 'solved' && challenge.solved === true) ||
+        (solved === 'unsolved' && challenge.solved === false);
 
-    if (challenges == null || challenges.length == 0) {
-        return (
-            <Container className="p-0">
-                {loading && <Loading />}
-                {error && <Error message={error} />}
-                {!loading && !error && <p>No challenges found.</p>}
-            </Container>
+        return matchesText && matchesSolved;
+    });
+
+    setFilteredChallenges(filtered);
+    }, [filter, solved, challenges]);
+
+    const toggleSolved = () => {
+        setSolved((prev) =>
+            prev === '' ? 'solved' : prev === 'solved' ? 'unsolved' : ''
         );
-    } else {
-        return (
-        <Container className="p-0">
-            <Form inline className="mb-3">
-                <Row className="py-2 border-bottom rounded fw-bold">
-                {showUser && 
-                <><Col xs={colSize} md={colSize}>User</Col>
-                {showSearch &&
-                <Col xs={1} md={1}>
-                    <Form.Control
-                        type="text"
-                        placeholder="Search"
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                </Col>}</>
-                }
-                {showTitle &&
-                <><Col xs={titleColSize} md={titleColSize}>Title</Col>
-                {showSearch &&
-                <Col xs={5} md={5}>
-                    <Form.Control
-                        type="text"
-                        placeholder="Search"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                </Col>}</>
-                }
-                {showDifficulty && 
-                <><Col xs={colSize} md={colSize}>Difficulty </Col>
-                {showSearch &&
-                <Col xs={colSize} md={colSize}>
-                <Form.Select value={difficulty} onChange={(e) => setDifficulty(e.target.value)}>
-                    <option value="">All</option>
-                    <option value="easy">Easy</option>
-                    <option value="medium">Medium</option>
-                    <option value="hard">Hard</option>
-                </Form.Select>
-                </Col>}</>
-                }
-                {showSolved && 
-                <><Col xs={colSize} md={colSize}>Solved</Col>
-                {showSearch &&
-                <Col xs={colSize} md={colSize}>
-                <Form.Select value={solved} onChange={(e) => setSolved(e.target.value)}>
-                    <option value="">All</option>
-                    <option value="solved">Solved</option>
-                    <option value="unsolved">Unsolved</option>
-                </Form.Select>
-                </Col>}</>
-                }
-            </Row>
-        </Form>
-            {filteredChallenges?.map(({ _id, title, difficulty, username, solved, showSearch}) => (
-            <ChallengeRow
-                key={_id}
-                id={_id}
-                title={showTitle ? title : undefined}
-                difficulty={showDifficulty ? difficulty : undefined}
-                username={showUser ? username : undefined}
-                solved={showSolved ? solved : undefined}
-                showSearch={showSearch ? showSearch : undefined}
-            />
-            ))}
-        </Container>
-        )
-    }
+    };
+
+  if (challenges == null || challenges.length === 0) {
+    return (
+      <div className="p-0">
+        {loading && <Loading />}
+        {error && <Error message={error} />}
+        {!loading && !error && <p className="text-gray-500">No challenges found.</p>}
+      </div>
+    );
+  }
+
+  return (
+    <div className="p-0">
+      {showSearch && (
+        <form className="mb-4">
+            <div className="w-4/12 mr-2 mb-4">
+                <input
+                type="text"
+                placeholder="Search"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="w-full border rounded px-2 py-1 text-sm"
+                />
+            </div>
+          <div className="flex flex-wrap gap-y-4 border-b pb-2 font-semibold text-sm md:text-base">
+            {showUser && (
+                <div className="w-2/12">User</div>
+            )}
+
+            {showTitle && (
+                <div className="w-6/12">Title</div>
+            )}
+
+            {showSolved && (
+                <div className="w-1/12 cursor-pointer"
+
+                    onClick={toggleSolved}
+                    style={{
+                    color:
+                        solved === 'solved' ? '#16a34a' : solved === 'unsolved' ? '#dc2626' : 'white'
+                    }}>
+                {solved === 'solved'
+                    ? 'Solved'
+                    : solved === 'unsolved'
+                    ? 'Unsolved'
+                    : 'Solved'}
+                </div>
+
+            )}
+                        
+            {showTimesSolved && (
+                <div className="w-1/12">Times Solved</div>
+            )}
+            
+            {showDate && (
+              <>
+                <div className="w-1/12">Date</div>
+              </>
+            )}
+
+          </div>
+        </form>
+      )}
+
+      {filteredChallenges?.map(({ _id, title, date, username, solved, timesSolved}) => (
+        <ChallengeRow
+            key={_id}
+            id={_id}
+            title={showTitle ? title : undefined}
+            date={showDate ? date : undefined}
+            username={showUser ? username : undefined}
+            solved={showSolved ? solved : undefined}
+            timesSolved={showTimesSolved ? timesSolved : undefined}
+            showSearch={showSearch}
+        />
+      ))}
+    </div>
+  );
 }
+
 export default ChallengeTable;

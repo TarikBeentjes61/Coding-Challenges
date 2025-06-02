@@ -60,7 +60,9 @@ exports.getChallenges = async (userId, filters = {}) => {
           difficulty: 1,
           solution: 1,
           username: '$user.username',
-          solved: 1
+          solved: 1,
+          timesSolved: 1,
+          date: 1
         }
       }
   ]).toArray();
@@ -131,7 +133,9 @@ exports.getCreatedChallengesByUserName = async (userId, username, filters = {}) 
           difficulty: 1,
           solution: 1,
           username: '$user.username',
-          solved: 1
+          solved: 1,
+          timesSolved: 1,
+          date: 1
         }
       }
   ]).toArray();
@@ -227,7 +231,9 @@ exports.getSolvedChallengesByUserName = async (userId, username, filters = {}) =
           difficulty: '$challenge.difficulty',
           solution: '$challenge.solution',
           username: '$creator.username',
-	        solved: '$solved'
+	        solved: '$solved',
+          timesSolved: '$challenge.timesSolved',
+          date: '$challenge.date'
         }	
     }
 ]).toArray();
@@ -255,7 +261,7 @@ exports.createChallenge = async ( userId, {title, description, difficulty, solut
    const existing = await challengesCollection.findOne({ title });
    if (existing) throw new Error('Title already exists');
    const userIdObj = convertToObjectId(userId); 
-   await challengesCollection.insertOne({ userId: userIdObj, title, description, difficulty, solution, createdAt: getCurrentDate(), timesSolved: 0 });
+   await challengesCollection.insertOne({ userId: userIdObj, title, description, difficulty, solution, date: getCurrentDate(), timesSolved: 0 });
    return { message: 'Challenge created successfully' };
 };
 

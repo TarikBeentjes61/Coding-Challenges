@@ -8,7 +8,6 @@ import CreateChallenge from './pages/CreateChallenge';
 import SolveChallenge from './pages/SolveChallenge';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
-import { Container } from 'react-bootstrap';
 import { ThemeProvider } from './components/ThemeProvider';
 
 import './App.css';

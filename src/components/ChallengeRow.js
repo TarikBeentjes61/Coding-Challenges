@@ -1,50 +1,58 @@
-import { Row, Col } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 
-const ChallengeRow = ({ id, title, difficulty, username, solved, showSearch }) => {
-  const colSize = showSearch ? 1 : 2;
+const ChallengeRow = ({ id, title, username, solved, timesSolved, date, showSearch }) => {
+  const colSize = showSearch ? 'w-1/12' : 'w-2/12';
+
   return (
-    <Row className="py-2 border-bottom">
+    <div className="flex flex-wrap py-2 border-b items-center text-sm md:text-base">
       {username && (
-        <Col className="border-right" xs={colSize} md={colSize}>
+        <div className={`w-2/12 pr-2`}>
           <Link
             to={`/profile/${username}`}
-            className="text-decoration-none text-warning fw-semibold"
+            className="text-yellow-500 font-semibold no-underline hover:underline"
           >
             {username}
           </Link>
-        </Col>
+        </div>
       )}
 
       {title && (
-        <Col xs={6} md={6} className="mb-2 mb-md-0">
+        <div className="w-6/12">
           <Link
             to={`/challenges/${id}`}
-            className="text-decoration-none text-info fw-semibold d-block"
-            style={{
-              wordWrap: 'break-word',
-              whiteSpace: 'normal',
-            }}
+            className="text-cyan-500 font-semibold block break-words"
           >
             {title}
           </Link>
-        </Col>
-      )}
-
-      {difficulty && (
-        <Col xs={colSize} md={colSize}>
-          <span className="badge bg-secondary">{difficulty}</span>
-        </Col>
+        </div>
       )}
 
       {typeof solved === 'boolean' && (
-        <Col xs={colSize} md={colSize}>
-          <span className={`badge ${solved ? 'bg-success' : 'bg-danger'}`}>
+        <div className={`w-1/12`}>
+          <span className={`text-white text-xs px-2 py-1 rounded ${solved ? 'bg-green-600' : 'bg-red-600'}`}>
             {solved ? 'Solved' : 'Unsolved'}
           </span>
-        </Col>
+        </div>
       )}
-    </Row>
+
+      {timesSolved && (
+        <div className="w-1/12">
+          <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded">
+            {timesSolved}
+          </span>
+        </div>
+      )}
+
+      {date && (
+        <div className={`w-1/12 px-2`}>
+          <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded">
+            {date}
+          </span>
+        </div>
+      )}
+
+    </div>
   );
 };
+
 export default ChallengeRow;
