@@ -1,6 +1,6 @@
 const Joi = require('joi');
 
-const userSchema = Joi.object({
+const registerSchema = Joi.object({
   username: Joi.string().alphanum().min(6).max(30).required().messages({
     'string.empty': 'Username cannot be empty',
     'string.min': 'Username must be at least 6 characters long',

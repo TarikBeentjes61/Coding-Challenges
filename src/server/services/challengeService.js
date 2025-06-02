@@ -3,6 +3,7 @@ const db = getDB();
 const challengesCollection = db.collection('challenges');
 const solvedChallengesCollection = db.collection('solvedChallenges');
 const { convertToObjectId, getCurrentDate } = require('../utils/utils');
+const { incrementReputation } = require('./userService');
 
 exports.getChallenges = async (userId, filters = {}) => {
   const userIdObj = convertToObjectId(userId);
@@ -271,11 +272,17 @@ exports.solveChallenge = async ({ userId, challengeId, solution }) => {
 
   const challenge = await challengesCollection.findOne({ _id: challengeIdObj });
   if (!challenge) throw new Error('Challenge not found');
+  if (challenge.userId.toString() === userIdObj.toString()) throw new Error('You cannot solve your own challenge');
   if (challenge.solution !== solution) throw new Error('Incorrect solution' );
 
   const existing = await solvedChallengesCollection.findOne({ userId: userIdObj, challengeId: challengeIdObj });
   if (existing) throw new Error('Challenge already solved');
+
   await challengesCollection.updateOne({ _id: challengeIdObj }, { $inc: { timesSolved: 1 } });
   await solvedChallengesCollection.insertOne({ userId: userIdObj, challengeId: challengeIdObj });
+
+  await incrementReputation(userId, 1);
+  await incrementReputation(challenge.userId, 1); 
+
   return { message: 'Challenge solved successfully' };
 };

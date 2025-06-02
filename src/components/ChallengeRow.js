@@ -4,7 +4,7 @@ const ChallengeRow = ({ id, title, username, solved, timesSolved, date, showSear
   const colSize = showSearch ? 'w-1/12' : 'w-2/12';
 
   return (
-    <div className="flex flex-wrap py-2 border-b items-center text-sm md:text-base">
+    <div className="flex flex-wrap py-2 border-b border-black dark:border-white items-center text-sm md:text-base">
       {username && (
         <div className={`w-2/12 pr-2`}>
           <Link
@@ -17,7 +17,7 @@ const ChallengeRow = ({ id, title, username, solved, timesSolved, date, showSear
       )}
 
       {title && (
-        <div className="w-6/12">
+        <div className="w-5/12">
           <Link
             to={`/challenges/${id}`}
             className="text-cyan-500 font-semibold block break-words"
@@ -27,8 +27,16 @@ const ChallengeRow = ({ id, title, username, solved, timesSolved, date, showSear
         </div>
       )}
 
+      {date && (
+        <div className="w-2/12">
+          <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded">
+            2024-10-01
+          </span>
+        </div>
+      )}
+
       {typeof solved === 'boolean' && (
-        <div className={`w-1/12`}>
+        <div className="w-2/12">
           <span className={`text-white text-xs px-2 py-1 rounded ${solved ? 'bg-green-600' : 'bg-red-600'}`}>
             {solved ? 'Solved' : 'Unsolved'}
           </span>
@@ -42,15 +50,6 @@ const ChallengeRow = ({ id, title, username, solved, timesSolved, date, showSear
           </span>
         </div>
       )}
-
-      {date && (
-        <div className={`w-1/12 px-2`}>
-          <span className="bg-gray-600 text-white text-xs px-2 py-1 rounded">
-            {date}
-          </span>
-        </div>
-      )}
-
     </div>
   );
 };

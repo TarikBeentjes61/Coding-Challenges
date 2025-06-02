@@ -1,10 +1,10 @@
 const jwt = require('jsonwebtoken');
 const userService = require('../services/userService');
 const JWT_SECRET = process.env.JWT_SECRET || 'secret key';
-const { userSchema, loginSchema } = require('../schemas/userSchemas');
+const { registerSchema, loginSchema } = require('../schemas/userSchemas');
 
 exports.registerUser = async (req, res, next) => {
-    const { error, value } = userSchema.validate(req.body);
+    const { error, value } = registerSchema.validate(req.body);
     if (error) {
         throw new Error(error.details[0].message);
     }

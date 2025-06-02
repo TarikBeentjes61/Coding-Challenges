@@ -15,6 +15,18 @@ function getCurrentDate() {
     return `${year}-${month}-${day}`;
 }
 
+function formatUser(user) {
+    return {
+        username: user.username,
+        registerDate: user.registerDate,
+        bio: user.bio || '',
+        profilePicture: user.profilePicture || '',
+        lastLoggedIn: user.lastLoggedIn,
+        reputation: user.reputation || 0,
+        _id: user._id
+    };
+}
+
 module.exports = {
-  convertToObjectId, getCurrentDate
+  convertToObjectId, getCurrentDate, formatUser
 };

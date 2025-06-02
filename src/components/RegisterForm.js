@@ -31,12 +31,12 @@ function RegisterForm() {
     }
   };
   return (
-      <div className="p-8 dark:bg-black dark:text-white">
+      <div className="p-8 text-black dark:text-white">
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
         <div className="mb-5">
-          <label for="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Username</label>
+          <label for="username" className="block mb-2 text-sm font-medium">Username</label>
           <input
-            className="bg-gray-150 border border-gray-400 text-sm rounded-lg block w-full p-2.5 text-black"
+            className="bg-gray-150 border border-gray-400 text-sm rounded-lg block w-full p-2.5 dark:text-black"
             type="text"
             value={username}
             placeholder="Username"
@@ -45,9 +45,9 @@ function RegisterForm() {
           />
         </div>
         <div className="mb-5">
-          <label for="username" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+          <label for="username" className="block mb-2 text-sm font-medium">Email</label>
           <input
-            className="bg-gray-150 border border-gray-400 text-sm rounded-lg block w-full p-2.5 text-black"
+            className="bg-gray-150 border border-gray-400 text-sm rounded-lg block w-full p-2.5 dark:text-black"
             type="email"
             value={email}
             placeholder="Email"
@@ -56,9 +56,9 @@ function RegisterForm() {
           />
         </div>
         <div className="mb-5">
-          <label for="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+          <label for="password" className="block mb-2 text-sm font-medium">Password</label>
           <input
-            className="bg-gray-150 border border-gray-400 text-sm rounded-lg block w-full p-2.5 text-black"
+            className="bg-gray-150 border border-gray-400 text-sm rounded-lg block w-full p-2.5 dark:text-black"
             type="password"
             value={password}
             placeholder="Password"
@@ -67,9 +67,9 @@ function RegisterForm() {
           />
         </div>
         <div className="mb-5">
-          <label for="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm Password</label>
+          <label for="password" className="block mb-2 text-sm font-medium">Confirm Password</label>
           <input
-            className="bg-gray-150 border border-gray-400 text-sm rounded-lg block w-full p-2.5 text-black"
+            className="bg-gray-150 border border-gray-400 text-sm rounded-lg block w-full p-2.5 dark:text-black"
             type="password"
             value={confirmPassword}
             placeholder="Confirm Password"
@@ -80,7 +80,8 @@ function RegisterForm() {
         <div className="flex items-start mb-5">
           <button
             type="submit"
-            className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            className="w-full bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg
+             text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Register
           </button>

@@ -8,13 +8,12 @@ import CreateChallenge from './pages/CreateChallenge';
 import SolveChallenge from './pages/SolveChallenge';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PrivateRoute from './components/PrivateRoute';
-import { ThemeProvider } from './components/ThemeProvider';
 
 import './App.css';
 
 function App() {
   return (
-    <ThemeProvider>
+      <div className="min-h-screen w-full bg-white dark:bg-gray-800">
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -47,7 +46,7 @@ function App() {
             <Route path="/" element={<Login />} />
           </Routes>
         </Router>
-    </ThemeProvider>
+      </div>
   );
 }
 export default App;
