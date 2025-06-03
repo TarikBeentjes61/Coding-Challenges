@@ -4,21 +4,21 @@ import useGetHandler from '../useGetHandler';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 
-function ChallengeTable({
-  url = 'challenges',
-  showUser = true,
-  showTitle = true,
-  showDate = true,
-  showSolved = true,
-  showTimesSolved = true,
-  showSearch = true,
-}) {
-  const { data: challenges, loading, error } = useGetHandler(url, { method: 'GET' });
-  const [filteredChallenges, setFilteredChallenges] = useState(null);
-  const [filter, setFilter] = useState('');
-  const [solved, setSolved] = useState('');
-  const [sortDirection, setSortDirection] = useState(null); 
-  const [sortDateDirection, setSortDateDirection] = useState(null);
+  function ChallengeTable({
+      url = 'challenges',
+      showUser = true,
+      showTitle = true,
+      showDate = true,
+      showSolved = true,
+      showTimesSolved = true,
+      showSearch = true,
+    }) {
+    const { data: challenges, loading, error } = useGetHandler(url, { method: 'GET' });
+    const [filteredChallenges, setFilteredChallenges] = useState(null);
+    const [filter, setFilter] = useState('');
+    const [solved, setSolved] = useState('');
+    const [sortDirection, setSortDirection] = useState(null); 
+    const [sortDateDirection, setSortDateDirection] = useState(null);
 
 
     useEffect(() => {

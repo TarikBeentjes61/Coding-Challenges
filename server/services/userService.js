@@ -55,3 +55,9 @@ exports.incrementReputation = async (userId, amount) => {
     }
     return true;
 }
+exports.updateUserBanner = async (id, bannerPath) => {
+    await usersCollection.updateOne(
+        { _id: id },
+        { $set: { banner: bannerPath } }
+    );
+}

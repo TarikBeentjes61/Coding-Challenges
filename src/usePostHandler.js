@@ -5,13 +5,15 @@ function usePostHandler(url) {
 
   const post = async (body = {}) => {
     try {
+      const isFormData = body instanceof FormData;
+
       const res = await fetch(`${API_URL}/${url}`, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           ...(token && { Authorization: `Bearer ${token}` }),
+          ...(isFormData ? {} : { 'Content-Type': 'application/json' }),
         },
-        body: JSON.stringify(body),
+        body: isFormData ? body : JSON.stringify(body),
       });
 
       if (!res.ok) {
@@ -25,7 +27,6 @@ function usePostHandler(url) {
       throw error;
     }
   };
-
 
   return { post };
 }

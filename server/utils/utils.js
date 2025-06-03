@@ -23,6 +23,7 @@ function formatUser(user) {
         profilePicture: user.profilePicture || '',
         lastLoggedIn: user.lastLoggedIn,
         reputation: user.reputation || 0,
+        banner: user.banner || '',
         _id: user._id
     };
 }

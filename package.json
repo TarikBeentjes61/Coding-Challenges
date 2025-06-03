@@ -18,6 +18,7 @@
     "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.511.0",
     "mongodb": "^6.16.0",
+    "multer": "^2.0.0",
     "react": "^19.1.0",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.0",

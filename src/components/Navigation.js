@@ -36,7 +36,7 @@ function Navigation() {
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow px-4 py-3 border-b border-orange-300 text-black dark:text-white">
-        <div class="max-w-8xl flex items-center">
+        <div className="max-w-8xl flex items-center">
           <div className="flex items-center space-x-6">
               <Link to="/home" className="text-xl font-bold">
                 Coding Challenges

@@ -32,4 +32,4 @@ const loginSchema = Joi.object({
     'any.required': 'Password is required',
   }),
 });
-module.exports = { userSchema, loginSchema };
+module.exports = { registerSchema, loginSchema };
