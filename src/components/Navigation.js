@@ -70,7 +70,7 @@ function Navigation() {
 
       {(isMenuOpen && token) && (
         <ul className="md:hidden mt-2 flex flex-col space-y-3">
-          <li><Link to="/profile">Profile</Link></li>
+          <li><Link to={`/profile/${user.username}`}>Profile</Link></li>
           <li><Link to="/challenges">Challenges</Link></li>
           <li><Link to="/createChallenge">Create Challenge</Link></li>
           <li><Link to="/leaderboards">Leaderboards</Link></li>

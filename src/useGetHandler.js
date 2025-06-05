@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 
 const API_URL = 'http://localhost:3001/api';
 
-function useGetHandler(url, runOnMount = true) {
+function useApiHandler(url, runOnMount = true) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -14,8 +14,8 @@ function useGetHandler(url, runOnMount = true) {
     try {
       const res = await fetch(`${API_URL}/${url}`, {
         headers: {
-          'Content-Type': 'application/json',
           ...(token && { Authorization: `Bearer ${token}` }),
+          'Content-Type': 'application/json',
         },
       });
       if (!res.ok) {
@@ -41,4 +41,4 @@ function useGetHandler(url, runOnMount = true) {
   return { data, error, loading, refetch: fetchData };
 }
 
-export default useGetHandler;
+export default useApiHandler;

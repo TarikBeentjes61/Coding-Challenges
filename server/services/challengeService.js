@@ -258,12 +258,32 @@ exports.getChallengeById = async (challengeId) => {
   return challenge;
 };
 
-exports.createChallenge = async ( userId, {title, description, difficulty, solution }) => {
+exports.createChallenge = async ( userId, {title, description, solution }) => {
    const existing = await challengesCollection.findOne({ title });
    if (existing) throw new Error('Title already exists');
    const userIdObj = convertToObjectId(userId); 
-   await challengesCollection.insertOne({ userId: userIdObj, title, description, difficulty, solution, date: getCurrentDate(), timesSolved: 0 });
+   await challengesCollection.insertOne({ userId: userIdObj, title, description, solution, date: getCurrentDate(), timesSolved: 0 });
    return { message: 'Challenge created successfully' };
+};
+exports.updateChallenge = async (userId, { challengeId, title, description, solution }) => {
+  const userIdObj = convertToObjectId(userId);
+  const challengeIdObj = convertToObjectId(challengeId);
+  const existing = await challengesCollection.findOne({ _id: challengeIdObj, userId: userIdObj });
+  if (!existing) throw new Error('Challenge not found or access denied');
+
+  await challengesCollection.updateOne(
+    { _id: existing._id },
+    {
+      $set: {
+        title,
+        description,
+        solution,
+        updatedAt: getCurrentDate(), 
+      },
+    }
+  );
+
+  return { message: 'Challenge updated successfully' };
 };
 
 exports.solveChallenge = async ({ userId, challengeId, solution }) => {

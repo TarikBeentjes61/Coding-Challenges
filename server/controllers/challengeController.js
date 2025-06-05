@@ -1,5 +1,5 @@
 const challengeService = require('../services/challengeService');
-const { challengeSchema, solveChallengeSchema } = require('../schemas/challengeSchemas');
+const { createChallengeSchema, solveChallengeSchema, updateChallengeSchema } = require('../schemas/challengeSchemas');
 
 exports.getChallenges = async (req, res, next) => {
     const filters = req.query;
@@ -50,7 +50,7 @@ exports.getChallengeById = async (req, res, next) => {
 };
 
 exports.createChallenge = async (req, res, next) => {
-    const { error, value } = challengeSchema.validate(req.body);
+    const { error, value } = createChallengeSchema.validate(req.body);
     if (error) {
         throw new Error(error.details[0].message);
     }
@@ -61,7 +61,18 @@ exports.createChallenge = async (req, res, next) => {
         next(error);
     }
 };
-
+exports.updateChallenge = async(req, res, next) => {
+    const { error, value } = updateChallengeSchema.validate(req.body);
+    if (error) {
+        throw new Error(error.details[0].message);
+    }
+    try {
+        const updatedChallenge = await challengeService.updateChallenge(req.user.id, value);
+        res.status(201).json(updatedChallenge);
+    } catch (error) {
+        next(error);
+    }
+}
 exports.solveChallenge = async (req, res, next) => {
     const { error, value } = solveChallengeSchema.validate({ ...req.body, userId: req.user.id });
     if (error) {

@@ -1,4 +1,4 @@
-import Home from './pages/Home';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Profile from './pages/Profile';
 import Login from './pages/Login';
 import Register from './pages/Register';
@@ -6,14 +6,14 @@ import Logout from './pages/Logout';
 import Challenges from './pages/Challenges';
 import CreateChallenge from './pages/CreateChallenge';
 import SolveChallenge from './pages/SolveChallenge';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import PageNotFound from './pages/PageNotFound';
 import PrivateRoute from './components/PrivateRoute';
 
 import './App.css';
 
 function App() {
   return (
-      <div className="min-h-screen w-full bg-white dark:bg-gray-800">
+      <div className="min-h-screen w-full bg-white dark:bg-neutral-800">
         <Router>
           <Routes>
             <Route path="/login" element={<Login />} />
@@ -29,7 +29,7 @@ function App() {
               </PrivateRoute>} />"
             <Route path="/home" element={
               <PrivateRoute>
-                <Home />
+                <Challenges />
               </PrivateRoute>} />
             <Route path="/challenges" element={
               <PrivateRoute>
@@ -44,6 +44,7 @@ function App() {
                 <SolveChallenge />
               </PrivateRoute>} />
             <Route path="/" element={<Login />} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Router>
       </div>

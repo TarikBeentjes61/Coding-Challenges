@@ -37,6 +37,9 @@ exports.loginUser = async (req, res, next) => {
 
 exports.getUserProfile = async (req, res, next) => {
     const { username } = req.params;
+    if (typeof username !== 'string' || !/^[a-zA-Z0-9]+$/.test(username)) {
+        return res.status(400).json({ message: 'Invalid username' });
+    }
     try {
         const userProfile = await userService.getUserByName(username);
         if (!userProfile) {
@@ -47,16 +50,4 @@ exports.getUserProfile = async (req, res, next) => {
         next(error);
     }
 };
-exports.uploadBanner = async (req, res, next) => {
-    const file = req.file;
-    const id = req.user.id;
-    if (!file) {
-        return res.status(400).json({ message: 'No file uploaded' });
-    }
-    try {
-        const updatedUser = await userService.updateUserBanner(id, file.path);
-        res.status(200).json({ message: 'Banner uploaded successfully', user: updatedUser });
-    } catch (error) {
-        next(error);
-    }
-};
+

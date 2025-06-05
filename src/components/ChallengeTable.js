@@ -20,7 +20,6 @@ import Error from '../components/Error';
     const [sortDirection, setSortDirection] = useState(null); 
     const [sortDateDirection, setSortDateDirection] = useState(null);
 
-
     useEffect(() => {
     if (!challenges) return;
 
@@ -58,8 +57,6 @@ import Error from '../components/Error';
     setFilteredChallenges(filtered);
     }, [filter, solved, sortDirection, sortDateDirection, challenges]);
 
-
-
     const toggleSolved = () => {
         setSolved((prev) =>
             prev === '' ? 'solved' : prev === 'solved' ? 'unsolved' : ''
@@ -80,13 +77,13 @@ import Error from '../components/Error';
       <div className="p-0">
         {loading && <Loading />}
         {error && <Error message={error} />}
-        {!loading && !error && <p className="text-gray-500">No challenges found.</p>}
+        {!loading && !error && <p className="dark:text-white">No challenges found</p>}
       </div>
     );
   }
 
   return (
-    <div className="p-0">
+    <div className="p-0  text-nowrap">
         <form className="mb-4">
             {showSearch && (
                 <div className="lg:w-2/12 w-4/12 mr-2 mb-4 dark:text-black">
@@ -99,13 +96,13 @@ import Error from '../components/Error';
                     />
                 </div>
             )}
-          <div className="flex flex-wrap gap-y-4 border-b border-black dark:border-white pb-2 font-semibold text-sm md:text-base">
+            <div className="hidden sm:flex flex flex-wrap gap-y-4 border-b border-black dark:border-white pb-2 font-semibold text-sm md:text-base">
             {showUser && (
                 <div className="w-2/12">User</div>
             )}
 
             {showTitle && (
-                <div className="w-5/12">Title</div>
+                <div className="w-4/12">Title</div>
             )}
             
             {showDate && (
@@ -124,7 +121,7 @@ import Error from '../components/Error';
                         
             {showTimesSolved && (
                 <div className="w-1/12 cursor-pointer" onClick={toggleSort}>
-                    Times {sortDirection === 'asc' ? '↑' : sortDirection === 'desc' ? '↓' : ''}
+                    Times Solved {sortDirection === 'asc' ? '↑' : sortDirection === 'desc' ? '↓' : ''}
                 </div>            
             )}
 
