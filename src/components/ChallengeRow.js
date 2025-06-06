@@ -4,7 +4,6 @@ const ChallengeRow = ({ id, title, username, solved, timesSolved, date }) => {
   return (
     <>
     <div className="border-b border-black dark:border-white flex-wrap py-2 items-center text-sm md:text-base hidden sm:flex">
-      {/* Row layout for medium and up */}
       {username && (
         <div className="w-2/12 pr-2">
           <Link

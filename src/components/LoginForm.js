@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import usePostHandler from '../usePostHandler';
+import useApiHandler from '../useApiHandler';
 
 function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
-  const { post, error } = usePostHandler('users/login');
+  const { request: post, error } = useApiHandler('users/login', 'POST');
 
   const navigate = useNavigate();
   const handleLogin = async (e) => {

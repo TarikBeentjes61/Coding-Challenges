@@ -1,6 +1,6 @@
 import ChallengeRow from '../components/ChallengeRow';
 import { useState, useEffect } from 'react';
-import useGetHandler from '../useGetHandler';
+import useApiHandler from '../useApiHandler';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 
@@ -13,7 +13,7 @@ import Error from '../components/Error';
       showTimesSolved = true,
       showSearch = true,
     }) {
-    const { data: challenges, loading, error } = useGetHandler(url, { method: 'GET' });
+    const { data: challenges, loading, error } = useApiHandler(url);
     const [filteredChallenges, setFilteredChallenges] = useState(null);
     const [filter, setFilter] = useState('');
     const [solved, setSolved] = useState('');

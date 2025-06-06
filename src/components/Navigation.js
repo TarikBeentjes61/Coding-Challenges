@@ -22,7 +22,7 @@ function Navigation() {
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme]);
+  }, [theme, token]);
 
   useEffect(() => {
     const handleResize = () => {

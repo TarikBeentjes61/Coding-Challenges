@@ -1,9 +1,5 @@
-import Navigation from './Navigation.js';
-
 function Error({ message }) {
     return (
-      <>
-      <Navigation />
       <div className="flex flex-col items-center justify-center min-h-[200px] py-10 text-center px-4">
         <div className="bg-red-100 text-red-800 border border-red-300 rounded-lg p-6 w-full max-w-md shadow">
           <h4 className="text-xl font-semibold mb-2">Error</h4>
@@ -16,7 +12,6 @@ function Error({ message }) {
           </button>
         </div>
       </div>
-      </>
     );
 }
 

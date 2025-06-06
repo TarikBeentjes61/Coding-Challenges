@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import usePostHandler from '../usePostHandler';
+import useApiHandler from '../useApiHandler';
 import { useNavigate } from 'react-router-dom';
 
 function RegisterForm() {
@@ -9,7 +9,7 @@ function RegisterForm() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [message, setMessage] = useState('');
 
-  const { post, error }  = usePostHandler('users/register');
+  const { request: post }  = useApiHandler('users/register', 'POST');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {

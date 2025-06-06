@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 const userService = require('../services/userService');
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'secret key';
 const { registerSchema, loginSchema } = require('../schemas/userSchemas');
 
 exports.registerUser = async (req, res, next) => {
@@ -29,7 +29,7 @@ exports.loginUser = async (req, res, next) => {
             throw new Error('Invalid credentials');
         }
         const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1d' });
-        res.json({ message: 'User registered successfully', token, user});
+        res.json({ message: 'User logged in successfully', token, user});
     } catch (error) {
         next(error);
     }

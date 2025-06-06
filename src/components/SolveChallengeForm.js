@@ -1,8 +1,8 @@
-import usePostHandler from "../usePostHandler";
+import useApiHandler from '../useApiHandler';
 import { useState } from 'react';
 
 function SolveChallengeForm({ challenge }) {
-  const { post } = usePostHandler('challenges/solve');
+  const { request: post } = useApiHandler('challenges/solve', 'POST');
   const [solution, setSolution] = useState('');
   const [message, setMessage] = useState('');
 

@@ -8,6 +8,7 @@ import CreateChallenge from './pages/CreateChallenge';
 import SolveChallenge from './pages/SolveChallenge';
 import PageNotFound from './pages/PageNotFound';
 import PrivateRoute from './components/PrivateRoute';
+import Navigation from './components/Navigation';
 
 import './App.css';
 
@@ -15,6 +16,7 @@ function App() {
   return (
       <div className="min-h-screen w-full bg-white dark:bg-neutral-800">
         <Router>
+        <Navigation />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />

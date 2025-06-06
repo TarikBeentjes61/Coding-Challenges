@@ -1,65 +1,65 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const API_URL = 'http://localhost:3001/api';
 
 function useApiHandler(url, method = 'GET') {
-    const [data, setData] = useState(null);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(false);
-    const token = localStorage.getItem('token');
-    const runOnMount = method === 'GET' ? true : false;
+  const [data, setData] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const token = localStorage.getItem('token');
 
-    const request = async (body = {}, contentType_ = '') => {
-        const shouldIncludeBody = ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase());
-        const makeJson = (contentType_.startsWith('image/'));
-        setLoading(true);
-        setError(null);
+  const request = useCallback(async (body = {}, contentType_ = '') => {
+    const shouldIncludeBody = ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase());
+    const isImageUpload = contentType_.startsWith('image/');
 
-        try {
-            const res = await fetch(`${API_URL}/${url}`, {
-            method,
-            headers: {
-                'Content-Type': contentType_ || 'application/json',
-                ...(token && { Authorization: `Bearer ${token}` }),
-            },
-            ...(shouldIncludeBody && {
-                body: makeJson ? body : JSON.stringify(body)
-            }),
-            });
+    setLoading(true);
+    setError(null);
 
-            const contentType = res.headers.get('content-type');
+    try {
+      const res = await fetch(`${API_URL}/${url}`, {
+        method,
+        headers: {
+          'Content-Type': contentType_ || 'application/json',
+          ...(token && { Authorization: `Bearer ${token}` }),
+        },
+        ...(shouldIncludeBody && {
+          body: isImageUpload ? body : JSON.stringify(body),
+        }),
+      });
 
-            if (!res.ok) {
-                const error = contentType?.includes('application/json')
-                ? await res.json()
-                : { message: 'An error occurred' };
-                throw new Error(error.message);
-            }
+      const contentType = res.headers.get('content-type');
 
-            if (res.status === 204) {
-                setData(null);
-                return null;
-            }
+      if (!res.ok) {
+        const errorData = contentType?.includes('application/json')
+          ? await res.json()
+          : { message: 'An error occurred' };
+        throw new Error(errorData.message);
+      }
 
-            const data = contentType?.includes('application/json') ? await res.json() : null;
+      if (res.status === 204) {
+        setData(null);
+        return null;
+      }
 
-            setData(data);
-            return data;
+      const responseData = contentType?.includes('application/json')
+        ? await res.json()
+        : null;
 
-        } catch (err) {
-            console.log(err);
-            setError(err.message);
-        } finally {
-            setLoading(false);
-        }
-    };
-
+      setData(responseData);
+      return responseData;
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, [method, token, url]);
 
   useEffect(() => {
-    if (runOnMount) {
+    if (method === 'GET') {
       request();
     }
-  }, [url]);
+  }, [method, request]);
 
   return { data, error, loading, request };
 }

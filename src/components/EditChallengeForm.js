@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import usePutHandler from "../usePutHandler";
+import useApiHandler from '../useApiHandler';
 
 function EditChallengeForm ({challenge}) {
     const [title, setTitle] = useState(challenge.title);
@@ -7,7 +7,7 @@ function EditChallengeForm ({challenge}) {
     const [solution, setSolution] = useState(challenge.solution);
     const [message, setMessage] = useState('');
 
-    const { put } = usePutHandler('challenges')
+    const { request: put } = useApiHandler('challenges', 'PUT');
 
     const handleSubmit = async (e) => {
         e.preventDefault();

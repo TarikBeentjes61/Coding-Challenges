@@ -1,9 +1,7 @@
 import { useParams } from 'react-router-dom';
 import { useState, useRef } from 'react';
-import Navigation from '../components/Navigation';
 import ChallengeTable from '../components/ChallengeTable';
 import useApiHandler from '../useApiHandler';
-
 import Loading from '../components/Loading.js';
 import Error from '../components/Error.js';
 
@@ -46,7 +44,6 @@ function Profile() {
 
     if (user) return (
       <div className="bg-white dark:bg-neutral-800 text-black dark:text-white">
-        <Navigation />
         <div className="relative w-full h-80">
           <img
             src={`${global.config.server.baseUrl}uploads/users/${user._id}/banner.jpg`}
