@@ -13,7 +13,7 @@ const limiter = {
     standardHeaders: true
 }
 
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'http://localhost:3000' })); // put in config
 app.use(express.json());
 app.use('/uploads', express.static('uploads'));
 
