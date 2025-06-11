@@ -1,6 +1,9 @@
 const express = require('express');
+const multer = require('multer');
 const uploadController = require('../controllers/uploadController');
 const authenticateToken = require('../middleware/auth');
+
+const upload = multer({ storage: multer.memoryStorage() });
 
 class UploadRouter {
     constructor() {
@@ -12,13 +15,21 @@ class UploadRouter {
         this.router.post(
             '/banner',
             authenticateToken,
-            express.raw({ type: 'image/*', limit: '1mb' }),
+            upload.single('file'),
             uploadController.banner
         );
+
+        this.router.post(
+            '/challengeImage',
+            authenticateToken,
+            upload.single('file'),
+            uploadController.challengeImage
+        );
     }
-    
+
     getRoutes() {
         return this.router;
     }
 }
-module.exports = new UploadRouter().getRoutes()
+
+module.exports = new UploadRouter().getRoutes();

@@ -5,33 +5,45 @@ import { Moon, Sun } from 'lucide-react';
 function Navigation() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
-  const [token] = useState(localStorage.getItem('token'));
-  const user = JSON.parse(localStorage.getItem('user'));
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
+  const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user')));
 
   const toggleTheme = () => {
     const newTheme = theme === 'light' ? 'dark' : 'light';
     setTheme(newTheme);
     localStorage.setItem('theme', newTheme);
-    document.documentElement.classList.toggle('dark', newTheme === 'dark');
-      if (theme === 'dark') {
-    document.documentElement.classList.add('dark');
-  } else {
-    document.documentElement.classList.remove('dark');
-  }
   };
-
+  
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
-  }, [theme, token]);
+  }, [theme]);
 
   useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === 'token') setToken(e.newValue);
+      if (e.key === 'user') setUser(JSON.parse(e.newValue));
+    };
+
+    const handleAuthChanged = () => {
+      setToken(localStorage.getItem('token'));
+      setUser(JSON.parse(localStorage.getItem('user')));
+    };
+
     const handleResize = () => {
       if (window.innerWidth > 768) {
         setIsMenuOpen(false);
       }
     };
+
+    window.addEventListener('storage', handleStorage);
+    window.addEventListener('authChanged', handleAuthChanged);
     window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+
+    return () => {
+        window.removeEventListener('storage', handleStorage);
+        window.removeEventListener('authChanged', handleAuthChanged);
+        window.removeEventListener('resize', handleResize);
+    };
   }, []);
 
   return (

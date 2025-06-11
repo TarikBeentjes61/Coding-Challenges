@@ -10,7 +10,7 @@ function useApiHandler(url, method = 'GET') {
 
   const request = useCallback(async (body = {}, contentType_ = '') => {
     const shouldIncludeBody = ['POST', 'PUT', 'PATCH'].includes(method.toUpperCase());
-    const isImageUpload = contentType_.startsWith('image/');
+    const isFormData = body instanceof FormData;
 
     setLoading(true);
     setError(null);
@@ -19,11 +19,11 @@ function useApiHandler(url, method = 'GET') {
       const res = await fetch(`${API_URL}/${url}`, {
         method,
         headers: {
-          'Content-Type': contentType_ || 'application/json',
           ...(token && { Authorization: `Bearer ${token}` }),
+          ...(!isFormData && { 'Content-Type': contentType_ || 'application/json' }),
         },
         ...(shouldIncludeBody && {
-          body: isImageUpload ? body : JSON.stringify(body),
+          body: isFormData ? body : JSON.stringify(body),
         }),
       });
 

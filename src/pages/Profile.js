@@ -25,15 +25,15 @@ function Profile() {
     };
 
     const handleFileChange = (e) => {
-        const selected = e.target.files[0];
-        if (!selected) return;
-        if (!selected.type.startsWith('image/')) {
-        }
-        handleUpload(selected);
+        const file = e.target.files[0];
+        if (!file) return;
+        const form = new FormData();
+        form.append('file', file);
+        handleUpload(form);
     };
 
-    const handleUpload = async (banner) => {
-        const result = await post(banner, banner.type);
+    const handleUpload = async (form) => {
+        const result = await post(form);
         if (result) {
             window.location.reload();
         }

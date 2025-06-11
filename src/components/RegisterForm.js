@@ -24,7 +24,7 @@ function RegisterForm() {
       const result = await post({ username, password, email });
       localStorage.setItem('token', result.token);
       localStorage.setItem('user', JSON.stringify(result.user));
-      setMessage('Registration successful');
+      window.dispatchEvent(new Event('authChanged'));
       navigate('/home');
     } catch (err) {
       setMessage(err.message);

@@ -8,6 +8,7 @@ function Logout() {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('username');
+    window.dispatchEvent(new Event('authChanged'));
     navigate('/login');
   }, [navigate]);
 

@@ -1,4 +1,5 @@
 const challengeService = require('../services/challengeService');
+const uploadService = require('../services/uploadService');
 const { createChallengeSchema, solveChallengeSchema, updateChallengeSchema } = require('../schemas/challengeSchemas');
 
 exports.getChallenges = async (req, res, next) => {
@@ -67,6 +68,10 @@ exports.updateChallenge = async(req, res, next) => {
         throw new Error(error.details[0].message);
     }
     try {
+        const existingChallenge = await challengeService.getChallengeById(value.challengeId)
+        const oldImages = findImageNamesFromDescription(existingChallenge.description);
+        const newImages = findImageNamesFromDescription(value.description);
+        deleteUnusedImages(oldImages, newImages);
         const updatedChallenge = await challengeService.updateChallenge(req.user.id, value);
         res.status(201).json(updatedChallenge);
     } catch (error) {
@@ -85,3 +90,34 @@ exports.solveChallenge = async (req, res, next) => {
         next(error);
     }
 };
+
+function findImageNamesFromDescription(desc) {
+    const filenames = new Set();
+
+    function walk(node) {
+        if (!node) return;
+        if (node.type === 'image' && node.attrs?.src) {
+            const match = node.attrs.src.match(/(?:http:\/\/[^/]+\/)?(uploads\/challenges\/[^/]+\/[^?"\s]+)/);
+            if (match) {
+                filenames.add(match[1]);
+            }
+        }
+
+        if (Array.isArray(node.content)) {
+            for (const child of node.content) {
+                walk(child);
+            }
+        }
+    }
+
+    walk(desc);
+    return filenames;
+}
+function deleteUnusedImages(oldImages, newImages) {
+    const images = [...oldImages].filter(name => !newImages.has(name));
+    if (images) {
+        for (const image of images) {
+            uploadService.deleteFile(image);
+        }
+    }
+}

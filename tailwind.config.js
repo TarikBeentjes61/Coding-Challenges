@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 const textshadow = require('tailwindcss-textshadow');
+const typography = require('@tailwindcss/typography')
 
 module.exports = {
   darkMode: 'class', 
@@ -7,6 +8,6 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [textshadow],
+  plugins: [textshadow, typography],
 }
 

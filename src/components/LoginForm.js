@@ -13,10 +13,10 @@ function LoginForm() {
     e.preventDefault();
     try {
       const result = await post({ username, password });
-      if (result.token) {
+      if (result) {
         localStorage.setItem('token', result.token);
         localStorage.setItem('user', JSON.stringify(result.user));
-        setMessage('Login successful');
+        window.dispatchEvent(new Event('authChanged'));
       } else {
         setMessage(error.message);
       }
