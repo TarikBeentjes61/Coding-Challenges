@@ -1,79 +1,35 @@
 const { getDB } = require('../config/db');
+const ApiError = require('../utils/apiError');
 const db = getDB();
 const challengesCollection = db.collection('challenges');
 const solvedChallengesCollection = db.collection('solvedChallenges');
 const { convertToObjectId, getCurrentDate } = require('../utils/utils');
 const { incrementReputation } = require('./userService');
 
+const {
+  lookupUser,
+  lookupSolved,
+  matchFilters,
+  matchSolvedStatus,
+  projectChallenge
+} = require('../pipelines/challengePipelines');
+
 exports.getChallenges = async (userId, filters = {}) => {
   const userIdObj = convertToObjectId(userId);
   const { name, title, difficulty, solved } = filters;
-  const solvedBool = solved === 'solved' ? true : solved === 'unsolved' ? false : undefined;
-  try {
-    const challenges = challengesCollection.aggregate([
-      {
-        $lookup: {
-          from: 'users',
-          localField: 'userId',
-          foreignField: '_id',
-          as: 'user'
-        }
-      },
-      { $unwind: '$user' },
-      {
-        $lookup: {
-          from: 'solvedChallenges',
-          let: { challengeId: '$_id', userId: userIdObj },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ['$challengeId', '$$challengeId'] },
-                    { $eq: ['$userId', '$$userId'] }
-                  ]
-                }
-              }
-            }
-          ],
-          as: 'solved'
-        }
-      },
-      {
-        $addFields: {
-          solved: { $gt: [{ $size: '$solved' }, 0] }
-        }
-      },
-
-      {
-        $match: {
-          ...(title && { title: { $regex: title, $options: 'i' } }),
-          ...(difficulty && { difficulty }),
-          ...(name && { 'user.username': { $regex: name, $options: 'i' } }),
-          ...(solvedBool !== undefined && { solved: solvedBool })
-        }
-      },
-
-      {
-        $project: {
-          title: 1,
-          description: 1,
-          difficulty: 1,
-          solution: 1,
-          username: '$user.username',
-          solved: 1,
-          timesSolved: 1,
-          date: 1
-        }
+  
+  const pipeline = [
+    ...lookupUser(),
+    ...lookupSolved(userIdObj),
+    {
+      $match: {
+        ...matchFilters({ title, difficulty, name }),
+        ...matchSolvedStatus('solved', solved)
       }
-  ]).toArray();
-      if (!challenges) {
-        throw new Error();
-      }
-      return challenges;
-    } catch (err) {
-      throw err;
-    }
+    },
+    projectChallenge()
+  ];
+  return await challengesCollection.aggregate(pipeline).toArray();
 };
 
 exports.getCreatedChallengesByUserName = async (userId, username, filters = {}) => {
@@ -249,11 +205,12 @@ exports.getSolvedChallengesByUserName = async (userId, username, filters = {}) =
 
 exports.getChallengeById = async (challengeId) => {
   const challengeIdObj = convertToObjectId(challengeId);
+  if(!challengeIdObj) { 
+    throw new ApiError("Challenge not found", 404);
+  }
   const challenge = await challengesCollection.findOne({ _id: challengeIdObj });
   if (!challenge) {
-    const error = new Error('Challenge not found');
-    error.status = 404;
-    throw error;
+    throw new ApiError("Challenge not found", 404);
   }
   return challenge;
 };
@@ -262,8 +219,8 @@ exports.createChallenge = async ( userId, {title, description, solution }) => {
    const existing = await challengesCollection.findOne({ title });
    if (existing) throw new Error('Title already exists');
    const userIdObj = convertToObjectId(userId); 
-   await challengesCollection.insertOne({ userId: userIdObj, title, description, solution, date: getCurrentDate(), timesSolved: 0 });
-   return { message: 'Challenge created successfully' };
+   const challenge = await challengesCollection.insertOne({ userId: userIdObj, title, description, solution, date: getCurrentDate(), timesSolved: 0 });
+   return challenge;
 };
 exports.updateChallenge = async (userId, { challengeId, title, description, solution }) => {
   const userIdObj = convertToObjectId(userId);

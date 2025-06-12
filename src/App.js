@@ -11,6 +11,7 @@ import PrivateRoute from './components/PrivateRoute';
 import Navigation from './components/Navigation';
 
 import './App.css';
+import PublicRoute from './components/PublicRoute';
 
 function App() {
   return (
@@ -18,8 +19,18 @@ function App() {
         <Router>
         <Navigation />
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/" element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>} />
+            <Route path="/login" element={
+              <PublicRoute>
+                <Login />
+              </PublicRoute>} />
+            <Route path="/register" element={
+              <PublicRoute>
+                <Register />
+              </PublicRoute>} />
             <Route path="/logout" element={
               <PrivateRoute>
                 <Logout />
@@ -45,7 +56,6 @@ function App() {
               <PrivateRoute>
                 <SolveChallenge />
               </PrivateRoute>} />
-            <Route path="/" element={<Login />} />
             <Route path="*" element={<PageNotFound />} />
           </Routes>
         </Router>

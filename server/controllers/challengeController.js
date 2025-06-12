@@ -1,6 +1,7 @@
 const challengeService = require('../services/challengeService');
 const uploadService = require('../services/uploadService');
 const { createChallengeSchema, solveChallengeSchema, updateChallengeSchema } = require('../schemas/challengeSchemas');
+const ApiError = require('../utils/apiError');
 
 exports.getChallenges = async (req, res, next) => {
     const filters = req.query;
@@ -42,7 +43,7 @@ exports.getChallengeById = async (req, res, next) => {
     try {
         const challenge = await challengeService.getChallengeById(challengeId);
         if (!challenge) {
-            throw new Error('Challenge not found');
+            throw new ApiError('Challenge not found', 404);
         }
         res.status(200).json(challenge);
     } catch (error) {

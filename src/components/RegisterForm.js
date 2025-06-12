@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import useApiHandler from '../useApiHandler';
 import { useNavigate } from 'react-router-dom';
 
@@ -7,9 +7,9 @@ function RegisterForm() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState(null);
 
-  const { request: post }  = useApiHandler('users/register', 'POST');
+  const { request: post, error }  = useApiHandler('users/register', 'POST');
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -20,16 +20,18 @@ function RegisterForm() {
       return;
     }
 
-    try {
-      const result = await post({ username, password, email });
+    const result = await post({ username, password, email });
+    if (result) {
       localStorage.setItem('token', result.token);
       localStorage.setItem('user', JSON.stringify(result.user));
       window.dispatchEvent(new Event('authChanged'));
       navigate('/home');
-    } catch (err) {
-      setMessage(err.message);
     }
   };
+  useEffect(() => {
+    if (error) setMessage(error);
+  }, [error]);
+
   return (
       <div className="p-8 text-black dark:text-white">
       <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
@@ -87,9 +89,9 @@ function RegisterForm() {
           </button>
         </div>
         {message && (
-        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-          <span class="block sm:inline">{message}</span>
-          <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setMessage('')}>
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+          <span className="block sm:inline">{message}</span>
+          <span className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setMessage('')}>
             X
           </span>
         </div>

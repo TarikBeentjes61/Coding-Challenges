@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useApiHandler from '../useApiHandler';
 
@@ -11,20 +11,19 @@ function LoginForm() {
   const navigate = useNavigate();
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const result = await post({ username, password });
-      if (result) {
-        localStorage.setItem('token', result.token);
-        localStorage.setItem('user', JSON.stringify(result.user));
-        window.dispatchEvent(new Event('authChanged'));
-      } else {
-        setMessage(error.message);
-      }
+    const result = await post({ username, password });
+    console.log(result);
+    if (result) {
+      localStorage.setItem('token', result.token);
+      localStorage.setItem('user', JSON.stringify(result.user));
+      window.dispatchEvent(new Event('authChanged'));
       navigate('/home');
-    } catch (err) {
-      setMessage(err.message);
     }
   };
+
+  useEffect(() => {
+    if (error) setMessage(error);
+  }, [error]);
 
   return (
       <div className="p-8 text-black dark:text-white">

@@ -1,10 +1,10 @@
 const { ObjectId } = require('mongodb');
 
 function convertToObjectId(id) {
-  if (!ObjectId.isValid(id)) {
-    throw new Error('Invalid ObjectId');
+  if (ObjectId.isValid(id)) {
+    return new ObjectId(String(id));
   }
-  return new ObjectId(String(id));
+  return undefined;
 }
 
 function getCurrentDate() {

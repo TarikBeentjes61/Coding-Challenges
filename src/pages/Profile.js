@@ -4,8 +4,9 @@ import ChallengeTable from '../components/ChallengeTable';
 import useApiHandler from '../useApiHandler';
 import Loading from '../components/Loading.js';
 import Error from '../components/Error.js';
-
 import '../config.js';
+import PageNotFound from './PageNotFound.js';
+
 function Profile() {
     const { username } = useParams();
     const { data: user, loading, error } = useApiHandler(`users/profile/${username}`);
@@ -40,6 +41,7 @@ function Profile() {
     }
     
     if (loading) return <Loading />;
+    if (error === "User not found") return <PageNotFound />
     if (error) return <Error message={error} />;
 
     if (user) return (

@@ -8,7 +8,7 @@ const iconSize = 18;
 const unselected = 'bg-gray-100 dark:bg-gray-600 mr-1 px-2 py-1 rounded';
 const selected = 'bg-blue-500 dark:bg-blue-500 mr-1 px-2 py-1 rounded'
 
-const TipTap = forwardRef(({ content }, ref) => {
+const TipTap = forwardRef(({ content, readOnly = false }, ref) => {
   const blobMapRef = useRef(new Map());
 
   const editor = useEditor({
@@ -34,6 +34,7 @@ const TipTap = forwardRef(({ content }, ref) => {
       },
     },
     content,
+    editable: !readOnly
   });
 
   useImperativeHandle(ref, () => ({
@@ -66,7 +67,7 @@ const TipTap = forwardRef(({ content }, ref) => {
             return '';
         });
 
-        for (const [blobUrl, file] of blobMapRef.current.entries()) {
+        for (const [blobUrl] of blobMapRef.current.entries()) {
             if (!currentBlobs.has(blobUrl)) {
                 URL.revokeObjectURL(blobUrl);
                 blobMapRef.current.delete(blobUrl);
@@ -80,6 +81,7 @@ const TipTap = forwardRef(({ content }, ref) => {
 
   return (
     <div className="border rounded-xl p-4 shadow-md ">
+      {!readOnly && editor && (
       <div className="flex flex-wrap gap-2 sm:gap-3 mb-4">
         <button
           type="button"
@@ -173,6 +175,7 @@ const TipTap = forwardRef(({ content }, ref) => {
         <ImageIcon size={iconSize} />
         </button>
       </div>
+      )}
       <EditorContent editor={editor} className=""/>
     </div>
   )

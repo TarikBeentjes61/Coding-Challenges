@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useApiHandler from '../useApiHandler';
 import TipTap from './TipTap';
 
@@ -7,44 +7,39 @@ function EditChallengeForm({ challenge }) {
   const [description, setDescription] = useState(challenge.description);
   const [solution, setSolution] = useState(challenge.solution);
   const [message, setMessage] = useState('');
-  const { request: put } = useApiHandler('challenges', 'PUT');
+  const { request: put, error} = useApiHandler('challenges', 'PUT');
   const { request: post } = useApiHandler('uploads/challengeImage', 'POST');
   const tiptapRef = useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage('');
+    const challengeId = challenge._id;
+    const doc = tiptapRef.current.getJSON();
+    const blobMap = tiptapRef.current.getBlobMap(); 
 
-    try {
-        const challengeId = challenge._id;
-        const doc = tiptapRef.current.getJSON();
-        const blobMap = tiptapRef.current.getBlobMap(); 
+    for (const [blobUrl, file] of blobMap.entries()) {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('challengeId', challengeId);
 
-      for (const [blobUrl, file] of blobMap.entries()) {
-          const form = new FormData();
-          form.append('file', file);
-          form.append('challengeId', challengeId);
+      const result = await post(form);
 
-          const result = await post(form);
+      replaceSrcInDoc(doc, blobUrl, `${global.config.server.baseUrl}${result.url}`);
+    }
 
-          replaceSrcInDoc(doc, blobUrl, `${global.config.server.baseUrl}${result.url}`);
-        }
-
-        await put({
-          challengeId,
-          title,
-          description: doc,
-          solution,
-        });
-
-        for (const [blobUrl] of blobMap.entries()) {
-          URL.revokeObjectURL(blobUrl);
-        }
-        blobMap.clear();
-
-        setMessage('Challenge updated');
-    } catch (err) {
-        setMessage(err.message || 'Something went wrong');
+    const result = await put({
+      challengeId,
+      title,
+      description: doc,
+      solution,
+    });
+    if (result) {
+      for (const [blobUrl] of blobMap.entries()) {
+        URL.revokeObjectURL(blobUrl);
+      }
+      blobMap.clear();
+      setMessage('Challenge Updated!')
     }
   };
 
@@ -56,6 +51,9 @@ function EditChallengeForm({ challenge }) {
         node.content.forEach((child) => replaceSrcInDoc(child, oldSrc, newSrc));
       }
   };
+  useEffect(() => {
+    if (error) setMessage(error);
+  }, [error]);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 dark:text-white">

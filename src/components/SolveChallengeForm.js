@@ -1,27 +1,30 @@
 import useApiHandler from '../useApiHandler';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import TipTap from './TipTap';
 
 function SolveChallengeForm({ challenge }) {
-  const { request: post } = useApiHandler('challenges/solve', 'POST');
+  const { request: post, error } = useApiHandler('challenges/solve', 'POST');
   const [solution, setSolution] = useState('');
   const [message, setMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-      await post({ challengeId: challenge._id, solution });
-      setMessage('Challenge solved successfully');
-    } catch (err) {
-      setMessage(err.message);
+    const result = await post({ challengeId: challenge._id, solution });
+    if (result) {
+      setMessage("Challenge solved!");
     }
   };
+  useEffect(() => {
+    if (error) setMessage(error);
+  }, [error]);
+
   if (challenge) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 dark:text-white">
         <h2 className="text-2xl font-semibold text-center mb-6">{challenge.title}</h2>
         <form onSubmit={handleSubmit} className="space-y-6 p-6">
-          <div className="mb-4 pb-4 border-b-2 border-dashed">
-            <p>{challenge.description}</p>
+          <div className="dark:bg-gray-900">
+            <TipTap content={challenge.description} readOnly />
           </div>
           <label htmlFor="solution" className="block font-medium mb-1">
             Solution

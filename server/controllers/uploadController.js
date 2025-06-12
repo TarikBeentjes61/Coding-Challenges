@@ -29,6 +29,6 @@ exports.challengeImage = async (req, res, next) => {
 
         res.json({ url: `uploads/challenges/${challengeId}/${path.basename(imagePath)}` });
     } catch (error) {
-        next(Error("Invalid File Type"));
+        next(Error("Image Upload Failed"));
     }
 };

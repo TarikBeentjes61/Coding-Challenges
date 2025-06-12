@@ -1,28 +1,72 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import useApiHandler from '../useApiHandler';
+import TipTap from './TipTap';
+import { useNavigate } from 'react-router-dom';
 
 function CreateChallengeForm() {
   const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
   const [solution, setSolution] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
+  const { request: post, error } = useApiHandler('challenges', 'POST');
+  const { request: postImage } = useApiHandler('uploads/challengeImage', 'POST');
+  const { request: put } = useApiHandler('challenges', 'PUT');
 
-  const { request: post } = useApiHandler('challenges', 'POST');
+  const tiptapRef = useRef();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    try {
-        const result = await post({ title, description, solution });
-        if (result) {
-          setMessage('Challenge created successfully');
-          setTitle('');
-          setDescription('');
-          setSolution('');
+    setMessage('');
+
+    const doc = tiptapRef.current.getJSON();
+    const blobMap = tiptapRef.current.getBlobMap(); 
+
+    const challenge = await post({
+      title,
+      description: doc,
+      solution,
+    });
+
+    if (challenge) {
+      const challengeId = challenge.insertedId;
+      for (const [blobUrl, file] of blobMap.entries()) {
+          const form = new FormData();
+          form.append('file', file);
+          form.append('challengeId', challengeId);
+
+          const result = await postImage(form);
+
+          replaceSrcInDoc(doc, blobUrl, `${global.config.server.baseUrl}${result.url}`);
+      }
+      const result = await put({
+        challengeId,
+        title,
+        description: doc,
+        solution
+      });
+
+      if (result) {
+        for (const [blobUrl] of blobMap.entries()) {
+          URL.revokeObjectURL(blobUrl);
         }
-    } catch (err) {
-        setMessage(err.message || 'Something went wrong');
+        blobMap.clear();
+        navigate(`/challenges/${challengeId}`);
+      }
     }
   };
+
+  const replaceSrcInDoc = (node, oldSrc, newSrc) => {
+      if (node.type === 'image' && node.attrs?.src === oldSrc) {
+        node.attrs.src = newSrc;
+      }
+      if (node.content) {
+        node.content.forEach((child) => replaceSrcInDoc(child, oldSrc, newSrc));
+      }
+  };
+
+  useEffect(() => {
+    if (error) setMessage(error);
+  }, [error]);
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8 dark:text-white">
@@ -43,17 +87,12 @@ function CreateChallengeForm() {
         </div>
 
         <div>
-          <label htmlFor="description" className="block font-medium mb-1">
-            Description
-          </label>
-          <textarea
-            id="description"
-            rows={6}
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter description"
-            className="w-full border border-gray-300 dark:border-gray-700 rounded px-3 py-2 bg-white dark:bg-gray-900 dark:text-white"
-          ></textarea>
+          <label className="block font-medium mb-1">Description</label>
+          <div className="dark:bg-gray-900">
+            <TipTap
+              ref={tiptapRef}
+            />
+          </div>
         </div>
 
         <div>
