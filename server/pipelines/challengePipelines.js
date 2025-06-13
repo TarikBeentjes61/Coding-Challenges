@@ -26,6 +26,33 @@ function lookupUser() {
   ];
 }
 
+function lookupCreator() {
+  return [
+    {
+      $lookup: {
+        from: 'users',
+        localField: 'challenge.userId',
+        foreignField: '_id',
+        as: 'creator'
+      }
+    },
+    { $unwind: '$creator' }
+  ];
+}
+function lookupChallenge() {
+  return [
+    {
+      $lookup: {
+        from: 'challenges',
+        localField: 'challengeId',
+        foreignField: '_id',
+        as: 'challenge'
+      }
+    },
+    { $unwind: '$challenge' }
+  ];
+}
+
 function lookupSolved(userIdObj) {
   return [
     {
@@ -74,6 +101,9 @@ module.exports = {
   matchSolvedStatus,
   matchFilters,
   lookupUser,
+  lookupCreator,
+  lookupChallenge,
   lookupSolved,
   projectChallenge
 };
+

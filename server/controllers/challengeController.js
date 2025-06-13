@@ -5,7 +5,6 @@ const ApiError = require('../utils/apiError');
 
 exports.getChallenges = async (req, res, next) => {
     const filters = req.query;
-
     try {
         const challenges = await challengeService.getChallenges(req.user.id, filters);
         res.status(200).json(challenges);
@@ -17,7 +16,6 @@ exports.getChallenges = async (req, res, next) => {
 exports.getCreatedChallengesByUserName = async (req, res, next) => {
     const filters = req.query;
     const { username } = req.params;
-
     try {
         const challenges = await challengeService.getCreatedChallengesByUserName(req.user.id, username, filters);
         res.status(200).json(challenges);
@@ -29,7 +27,6 @@ exports.getCreatedChallengesByUserName = async (req, res, next) => {
 exports.getSolvedChallengesByUserName = async (req, res, next) => {
     const filters = req.query;
     const { username } = req.params;
-
     try {
         const solvedChallenges = await challengeService.getSolvedChallengesByUserName(req.user.id, username, filters);
         res.status(200).json(solvedChallenges);
@@ -42,9 +39,6 @@ exports.getChallengeById = async (req, res, next) => {
     const { challengeId } = req.params;
     try {
         const challenge = await challengeService.getChallengeById(challengeId);
-        if (!challenge) {
-            throw new ApiError('Challenge not found', 404);
-        }
         res.status(200).json(challenge);
     } catch (error) {
         next(error);
@@ -54,7 +48,7 @@ exports.getChallengeById = async (req, res, next) => {
 exports.createChallenge = async (req, res, next) => {
     const { error, value } = createChallengeSchema.validate(req.body);
     if (error) {
-        throw new Error(error.details[0].message);
+        return next(new ApiError(error.details[0].message, 400));
     }
     try {
         const newChallenge = await challengeService.createChallenge(req.user.id, value);
@@ -63,10 +57,11 @@ exports.createChallenge = async (req, res, next) => {
         next(error);
     }
 };
+
 exports.updateChallenge = async(req, res, next) => {
     const { error, value } = updateChallengeSchema.validate(req.body);
     if (error) {
-        throw new Error(error.details[0].message);
+        return next(new ApiError(error.details[0].message, 400));
     }
     try {
         const existingChallenge = await challengeService.getChallengeById(value.challengeId)
@@ -74,15 +69,16 @@ exports.updateChallenge = async(req, res, next) => {
         const newImages = findImageNamesFromDescription(value.description);
         deleteUnusedImages(oldImages, newImages);
         const updatedChallenge = await challengeService.updateChallenge(req.user.id, value);
-        res.status(201).json(updatedChallenge);
+        res.status(200).json(updatedChallenge);
     } catch (error) {
         next(error);
     }
-}
+};
+
 exports.solveChallenge = async (req, res, next) => {
     const { error, value } = solveChallengeSchema.validate({ ...req.body, userId: req.user.id });
     if (error) {
-        throw new Error(error.details[0].message);
+        return next(new ApiError(error.details[0].message, 400));
     }
     try {
         const result = await challengeService.solveChallenge(value);

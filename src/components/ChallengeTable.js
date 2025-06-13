@@ -6,6 +6,7 @@ import Error from '../components/Error';
 
   function ChallengeTable({
       url = 'challenges',
+      pageSize = 25,
       showUser = true,
       showTitle = true,
       showDate = true,
@@ -13,7 +14,8 @@ import Error from '../components/Error';
       showTimesSolved = true,
       showSearch = true,
     }) {
-    const { data: challenges, loading, error } = useApiHandler(url);
+    const [pageNumber, setPageNumber] = useState(1);
+    const { data: challenges, loading, error } = useApiHandler(`${url}?page=${pageNumber}&limit=${pageSize}`);
     const [filteredChallenges, setFilteredChallenges] = useState(null);
     const [filter, setFilter] = useState('');
     const [solved, setSolved] = useState('');
@@ -140,7 +142,25 @@ import Error from '../components/Error';
             showSearch={showSearch}
         />
       ))}
+        <div className="mt-4 flex gap-2 items-center">
+            <button
+                className="px-3 py-1 border rounded disabled:opacity-50"
+                onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+                disabled={pageNumber === 1}
+            >
+                Previous
+            </button>
+            <span className="text-sm dark:text-white">Page {pageNumber}</span>
+            <button
+                className="px-3 py-1 border rounded disabled:opacity-50"
+                onClick={() => setPageNumber((prev) => prev + 1)}
+                disabled={challenges?.length < pageSize}
+            >
+                Next
+            </button>
+        </div>
     </div>
+    
   );
 }
 

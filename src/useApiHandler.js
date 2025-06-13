@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 
 const API_URL = 'http://localhost:3001/api';
 
-function useApiHandler(url, method = 'GET') {
+function useApiHandler(url, method = 'GET', queryParams = {}) {
   const [data, setData] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
