@@ -64,7 +64,6 @@ function Navigation() {
                   <li><Link className="hover:text-blue-700 dark:hover:text-red-700" to={`/profile/${user.username}`}>Profile</Link></li>
                   <li><Link to="/challenges">Challenges</Link></li>
                   <li><Link to="/createChallenge">Create Challenge</Link></li>
-                  <li><Link to="/leaderboards">Leaderboards</Link></li>
                   <li><Link to="/logout">Logout</Link></li>
               </ul>
               )}

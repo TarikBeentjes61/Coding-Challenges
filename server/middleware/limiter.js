@@ -1,6 +1,7 @@
 const rateLimitWindowMs = (60 * 1000); //Minute
 const maxRequestsPerWindow = 100;
 const ipRequestMap = {};
+let intervalId = null;
 
 function rateLimiter(req, res, next) {
     const ip = req.ip;
@@ -22,7 +23,6 @@ function rateLimiter(req, res, next) {
     next();
 }
 
-setInterval(cleanIpAddresses, ((60 * 1000) * 60)); //Per hour
 function cleanIpAddresses() {
   const now = Date.now();
   for (const ip in ipRequestMap) {
@@ -36,4 +36,25 @@ function cleanIpAddresses() {
   console.log("Cleaned old IPs");
 }
 
-module.exports = rateLimiter;
+
+function startLimiterCleanup() {
+  if (!intervalId) {
+    intervalId = setInterval(cleanIpAddresses, 60 * 60 * 1000); // every hour
+  }
+}
+
+function clearLimiterInterval() {
+  if (intervalId) {
+    clearInterval(intervalId);
+    intervalId = null;
+  }
+}
+
+startLimiterCleanup(); 
+
+module.exports = {
+  rateLimiter,
+  startLimiterCleanup,
+  clearLimiterInterval
+};
+

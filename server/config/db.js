@@ -5,7 +5,7 @@ const client = new MongoClient(uri);
 
 let db;
 
-async function connectToDB() {
+async function getDB() {
   if (!db) {
     await client.connect();
     db = client.db('CodingChallenges'); 
@@ -14,9 +14,25 @@ async function connectToDB() {
   return db;
 }
 
-function getDB() {
-  if (!db) throw new Error('DB not initialized. Call connectToDB first.');
-  return db;
+function getChallengesCollection() {
+  if (!db) throw new Error('DB not initialized. Call getDB first.');
+  return db.collection('challenges');
 }
 
-module.exports = { connectToDB, getDB };
+function getSolvedChallengesCollection() {
+  if (!db) throw new Error('DB not initialized. Call getDB first.');
+  return db.collection('solvedChallenges');
+}
+
+function getUsersCollection() {
+  if (!db) throw new Error('DB not initialized. Call getDB first.');
+  return db.collection('users');
+}
+
+async function disconnectFromDB() {
+  if (!db) throw new Error('DB not initialized. Call getDB first.');
+  await client.close();
+  db = null;
+}
+
+module.exports = { getDB, disconnectFromDB, getChallengesCollection, getSolvedChallengesCollection, getUsersCollection };

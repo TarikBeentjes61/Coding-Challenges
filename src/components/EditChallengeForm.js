@@ -4,7 +4,7 @@ import TipTap from './TipTap';
 
 function EditChallengeForm({ challenge }) {
   const [title, setTitle] = useState(challenge.title);
-  const [description, setDescription] = useState(challenge.description);
+  const description = challenge.description;
   const [solution, setSolution] = useState(challenge.solution);
   const [message, setMessage] = useState('');
   const { request: put, error} = useApiHandler('challenges', 'PUT');

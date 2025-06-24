@@ -1,23 +1,12 @@
-const { getDB } = require('../config/db');
+const { getChallengesCollection, getSolvedChallengesCollection } = require('../config/db');
 const ApiError = require('../utils/apiError');
-const db = getDB();
-const challengesCollection = db.collection('challenges');
-const solvedChallengesCollection = db.collection('solvedChallenges');
 const { convertToObjectId, getCurrentDate } = require('../utils/utils');
 const { incrementReputation } = require('./userService');
 
-const {
-  lookupUser,
-  lookupCreator,
-  lookupChallenge,
-  lookupSolved,
-  matchFilters,
-  matchSolvedStatus,
-  projectChallenge
-} = require('../pipelines/challengePipelines');
 const challengePipeline = require('../pipelines/challengePipeline');
 
 exports.getChallenges = async (userId, filters = {}) => {
+  const challengesCollection = getChallengesCollection();
   const userIdObj = convertToObjectId(userId);
   const page = parseInt(filters.page) || 1;
   const limit = parseInt(filters.limit) || 25;
@@ -26,6 +15,7 @@ exports.getChallenges = async (userId, filters = {}) => {
 };
 
 exports.getCreatedChallengesByUserName = async (userId, username, filters = {}) => {
+  const challengesCollection = getChallengesCollection();
   const userIdObj = convertToObjectId(userId);
   const page = parseInt(filters.page) || 1;
   const limit = parseInt(filters.limit) || 25;
@@ -34,6 +24,7 @@ exports.getCreatedChallengesByUserName = async (userId, username, filters = {}) 
 };
 
 exports.getSolvedChallengesByUserName = async (userId, username, filters = {}) => {
+  const solvedChallengesCollection = getSolvedChallengesCollection();
   const userIdObj = convertToObjectId(userId);
   const page = parseInt(filters.page) || 1;
   const limit = parseInt(filters.limit) || 25;
@@ -42,6 +33,7 @@ exports.getSolvedChallengesByUserName = async (userId, username, filters = {}) =
 };
 
 exports.getChallengeById = async (challengeId) => {
+  const challengesCollection = getChallengesCollection();
   const challengeIdObj = convertToObjectId(challengeId);
   if(!challengeIdObj) { 
     throw new ApiError("Challenge not found", 404);
@@ -54,12 +46,14 @@ exports.getChallengeById = async (challengeId) => {
 };
 
 exports.createChallenge = async ( userId, {title, description, solution }) => {
+   const challengesCollection = getChallengesCollection();
    const existing = await challengesCollection.findOne({ title });
    if (existing) throw new ApiError('Title already exists', 409);
    const userIdObj = convertToObjectId(userId); 
    return await challengesCollection.insertOne({ userId: userIdObj, title, description, solution, date: getCurrentDate(), timesSolved: 0 });
 };
 exports.updateChallenge = async (userId, { challengeId, title, description, solution }) => {
+  const challengesCollection = getChallengesCollection();
   const userIdObj = convertToObjectId(userId);
   const challengeIdObj = convertToObjectId(challengeId);
   const existing = await challengesCollection.findOne({ _id: challengeIdObj, userId: userIdObj });
@@ -81,6 +75,7 @@ exports.updateChallenge = async (userId, { challengeId, title, description, solu
 };
 
 exports.solveChallenge = async ({ userId, challengeId, solution }) => {
+  const challengesCollection = getChallengesCollection();
   const userIdObj = convertToObjectId(userId);
   const challengeIdObj = convertToObjectId(challengeId);
 

@@ -1,11 +1,10 @@
-const { getDB } = require('../config/db');
-const db = getDB();
-const usersCollection = db.collection('users');
+const { getUsersCollection } = require('../config/db');
 const bcrypt = require('bcryptjs');
 const { convertToObjectId, getCurrentDate, formatUser } = require('../utils/utils');
 const ApiError = require('../utils/apiError');
 
 exports.registerUser = async ({username, email, password}) => {
+    const usersCollection = getUsersCollection();
     const existing = await usersCollection.findOne({ username });
     if (existing) {
         throw new ApiError('Username already exists', 409);
@@ -27,7 +26,8 @@ exports.registerUser = async ({username, email, password}) => {
     return formatUser(user);
 }
 
-exports.loginUser = async ({ username, password }) => {    
+exports.loginUser = async ({ username, password }) => {
+    const usersCollection = getUsersCollection();    
     const user = await usersCollection.findOne({ username });
     if (!user) {
         throw new ApiError('Incorrect Credentials', 409);
@@ -39,6 +39,7 @@ exports.loginUser = async ({ username, password }) => {
     return formatUser(user);
 }
 exports.getUserById = async (userId) => {
+    const usersCollection = getUsersCollection();
     const userIdObj = convertToObjectId(userId);
     const user = await usersCollection.findOne({ _id: userIdObj });
     if (!user) {
@@ -47,6 +48,7 @@ exports.getUserById = async (userId) => {
     return formatUser(user);
 }
 exports.getUserByName = async (username) => {
+    const usersCollection = getUsersCollection();
     const user = await usersCollection.findOne({ username: username});
     if (!user) {
         throw new ApiError('User not found', 404);
@@ -54,6 +56,7 @@ exports.getUserByName = async (username) => {
     return formatUser(user);
 }
 exports.incrementReputation = async (userId, amount) => {
+    const usersCollection = getUsersCollection();
     const userIdObj = convertToObjectId(userId);
     await usersCollection.updateOne(
         { _id: userIdObj },
