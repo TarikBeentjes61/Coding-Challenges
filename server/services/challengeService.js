@@ -76,6 +76,7 @@ exports.updateChallenge = async (userId, { challengeId, title, description, solu
 
 exports.solveChallenge = async ({ userId, challengeId, solution }) => {
   const challengesCollection = getChallengesCollection();
+  const solvedChallengesCollection = getSolvedChallengesCollection();
   const userIdObj = convertToObjectId(userId);
   const challengeIdObj = convertToObjectId(challengeId);
 
