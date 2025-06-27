@@ -15,13 +15,14 @@ A full-stack web application for managing coding challenges, built with React (f
 ### Prerequisites
 
 - Node.js (v16+ recommended)
-- npm
+- Node Packacge Manager (npm)
+- A MongoDB database
 
 ### Installation
 
 1. **Clone the repository:**
 ```
-   git clone ...
+   git clone https://github.com/TarikBeentjes61/Coding-Challenges
 ```
 2. **Install dependencies:**
 ```
