@@ -14,6 +14,7 @@ module.exports = async () => {
 
   const db = await getDB();
 
+  await db.collection('solvedChallenges').deleteMany({ userId: convertToObjectId(shared.user2._id) });
   await db.collection('challenges').deleteMany({ title: /test challenge/i });
   await db.collection('users').deleteMany({ username: /testuser/i });
 
@@ -28,5 +29,11 @@ module.exports = async () => {
 
   if (fs.existsSync(statePath)) {
     fs.unlinkSync(statePath);
+  }
+  if (fs.existsSync(path.join(__dirname, `../../uploads/users/${shared.user._id}`))) {
+    fs.rmSync(path.join(__dirname, `../../uploads/users/${shared.user._id}`), { recursive: true, force: true });
+  }
+  if (fs.existsSync(path.join(__dirname, `../../uploads/challenges/${shared.challengeId}`))) {
+    fs.rmSync(path.join(__dirname, `../../uploads/challenges/${shared.challengeId}`), { recursive: true, force: true });
   }
 };

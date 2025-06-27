@@ -2,7 +2,7 @@ module.exports = {
   globalSetup: './server/tests/setup.js',
   globalTeardown: './server/tests/teardown.js',
   testEnvironment: './server/tests/custom-env.js',
-  collectCoverage: true,
+  collectCoverage: false,
   coverageDirectory: 'coverage',
   moduleNameMapper: {
     '^sharp$': './server/__mocks__/sharp.js',

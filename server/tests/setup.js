@@ -2,6 +2,7 @@ const { getDB } = require('../config/db');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 const path = require('path');
+const { getCurrentDate } = require('../utils/utils');
 
 module.exports = async () => {
   const db = await getDB();
@@ -22,10 +23,20 @@ module.exports = async () => {
   user.token = jwt.sign({ id: result.insertedId }, process.env.JWT_SECRET || 'secret key', { expiresIn: '1d' });
   user2.token = jwt.sign({ id: result2.insertedId }, process.env.JWT_SECRET || 'secret key', { expiresIn: '1d' });
 
+  const challenge = await db.collection('challenges').insertOne({
+    userId: result.insertedId,
+    title: 'Pre-inserted Test Challenge',
+    description: 'This is a test challenge',
+    solution: '123',
+    date: new getCurrentDate(),
+    timesSolved: 0,
+  });
+  console.log(user);
   const sharedState = {
       user,
       user2,
-      challengeId: '',
+      challengeId: challenge.insertedId.toString(),
+      createdChallengeId: '',
   };
 
   fs.writeFileSync(

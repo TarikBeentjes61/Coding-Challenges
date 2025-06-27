@@ -9,7 +9,7 @@ class UserRouter {
     }
 
     registerRoutes() {
-        this.router.get('/profile/:username', authenticateToken, userController.getUserProfile);
+        this.router.get('/:username', authenticateToken, userController.getUserProfile);
 
         this.router.post('/login', userController.loginUser);
         this.router.post('/register', userController.registerUser);

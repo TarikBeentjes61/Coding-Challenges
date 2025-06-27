@@ -39,8 +39,8 @@ exports.getUserProfile = async (req, res, next) => {
         return next(new ApiError('Invalid username', 400));
     }
     try {
-        const userProfile = await userService.getUserByName(username);
-        res.status(200).json(userProfile);
+        const user = await userService.getUserByName(username);
+        res.status(200).json({ user });
     } catch (error) {
         next(error);
     }

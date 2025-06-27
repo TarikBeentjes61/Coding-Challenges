@@ -38,15 +38,6 @@ exports.loginUser = async ({ username, password }) => {
     }
     return formatUser(user);
 }
-exports.getUserById = async (userId) => {
-    const usersCollection = getUsersCollection();
-    const userIdObj = convertToObjectId(userId);
-    const user = await usersCollection.findOne({ _id: userIdObj });
-    if (!user) {
-        throw new ApiError('User not found', 404);
-    }
-    return formatUser(user);
-}
 exports.getUserByName = async (username) => {
     const usersCollection = getUsersCollection();
     const user = await usersCollection.findOne({ username: username});

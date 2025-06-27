@@ -17,8 +17,8 @@ describe('Challenge API', () => {
         expect(res.statusCode).toBe(201);
         expect(res.body.insertedId || res.body._id).toBeDefined();
         expect(typeof res.body.insertedId || res.body._id).toBe('string');
-        __TEST__.challengeId = (res.body.insertedId || res.body._id)?.toString();
-        console.log('Saved challenge ID:', __TEST__.challengeId);
+        __TEST__.createdChallengeId = (res.body.insertedId || res.body._id)?.toString();
+        console.log('Saved challenge ID:', __TEST__.createdChallengeId);
     });
 
     test('should not create a challenge with duplicate title', async () => {
@@ -49,7 +49,7 @@ describe('Challenge API', () => {
 
     test('should get challenge by id', async () => {
         const res = await request(__TEST__.app)
-            .get(`/api/challenges/${__TEST__.challengeId}`)
+            .get(`/api/challenges/${__TEST__.createdChallengeId}`)
             .set('Authorization', `Bearer ${__TEST__.user.token}`);
         expect(res.statusCode).toBe(200);
         expect(res.body._id).toBeDefined();
@@ -73,7 +73,7 @@ describe('Challenge API', () => {
 
     test('solve challenge throws error on incorrect solution', async () => {
         const solve = {
-            challengeId: __TEST__.challengeId,
+            challengeId: __TEST__.createdChallengeId,
             solution: 'incorrect solution1'
         };
         const res = await request(__TEST__.app)
@@ -86,7 +86,7 @@ describe('Challenge API', () => {
 
     test('should solve a challenge', async () => {
         const solve = {
-            challengeId: __TEST__.challengeId,
+            challengeId: __TEST__.createdChallengeId,
             solution: 'solution1'
         };
         const res = await request(__TEST__.app)
@@ -99,7 +99,7 @@ describe('Challenge API', () => {
 
     test('solve challenge throws error if already solved', async () => {
         const solve = {
-            challengeId: __TEST__.challengeId,
+            challengeId: __TEST__.createdChallengeId,
             solution: 'solution1'
         };
         const res = await request(__TEST__.app)
@@ -121,7 +121,7 @@ describe('Challenge API', () => {
 
     test('should not solve own challenge', async () => {
         const solve = {
-            challengeId: __TEST__.challengeId,
+            challengeId: __TEST__.createdChallengeId,
             solution: 'solution1'
         };
         const res = await request(__TEST__.app)
@@ -143,7 +143,7 @@ describe('Challenge API', () => {
 
     test('should update a challenge', async () => {
         const update = {
-            challengeId: __TEST__.challengeId,
+            challengeId: __TEST__.createdChallengeId,
             title: 'Test Challenge 1 Updated',
             description: {
                 type: 'doc',
@@ -158,5 +158,4 @@ describe('Challenge API', () => {
         expect(res.statusCode).toBe(200);
         expect(res.body.message).toMatch(/Challenge updated successfully/i);
     });
-
 });

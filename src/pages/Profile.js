@@ -9,7 +9,7 @@ import PageNotFound from './PageNotFound.js';
 
 function Profile() {
     const { username } = useParams();
-    const { data: user, loading, error } = useApiHandler(`users/profile/${username}`);
+    const { data: user, loading, error } = useApiHandler(`users/${username}`);
     const { request: post, error: uploadError } = useApiHandler(`uploads/banner`, 'POST');
     const loggedInUser = JSON.parse(localStorage.getItem('user')) || '';
     const isOwner = loggedInUser?._id === user?._id;
